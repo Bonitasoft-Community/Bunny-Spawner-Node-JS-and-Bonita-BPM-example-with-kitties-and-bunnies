@@ -22,7 +22,7 @@ This is an example of how to use the Bonita BPM web REST API with Node.js. To ma
  
 # how it works
 
-it a three part system,
+it a three parts system,
 
 * Browser js client
 * Node js server
@@ -105,7 +105,7 @@ function connectThen(callback) {
 }
 ``` 
 
-Then, three nested request are called (line 85: server.js),
+Then, three nested request are called throught the function modValue (line 85: server.js),
 
 * Get the process instance (line 87: server.js),
 * Get value of the requested variable (line 96: server.js),
@@ -149,6 +149,8 @@ function modValue(vari, newValue) {
 		});
 }
 ```
+**NOTE: you need to send: "[{\"type\":\"java.lang.Integer\",\"value\":"+value+"}]" to change the
+value in order to make it work.**
 
 ## Bonita BPM TO Node.js server
 
