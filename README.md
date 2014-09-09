@@ -34,27 +34,27 @@ And Bonita call the Node.js server via HTTP requests.
 
 ## Browser js client TO Node.js server
 
-the following code allow the client to send notification to the server:
+the following code allow the client to send notification to the server (line 103: game.js & line 18/23: handlerLoader.js)):
 ```
-socket = io.connect('http://localhost:8042'); (line 103: game.js)
-socket.emit('update', {varName: 'bunny', value: 1}); (line 18: handlerLoader.js)
-socket.emit('update', {varName: 'cat', value: 1}); (line 23: handlerLoader.js)
+socket = io.connect('http://localhost:8042');
+socket.emit('update', {varName: 'bunny', value: 1});
+socket.emit('update', {varName: 'cat', value: 1});
 ```
 
-this code receive the notification on server side:
+this code receive the notification on server side  (line 80: server.js):
 ```
 	socket.on('update', function(data) { 
 		modValue(data.varName, data.value);
-	}); (line 80: server.js)
+	});
 ```
 
 ## Node.js server TO Browser js client
 
-the following code allow the server to send notification to the client:
+the following code allow the server to send notification to the client  (line 44: server.js):
 ```
-clientSocket.emit('update', { type: keyval[0], val: keyval[1] }); (line 44: server.js)
+clientSocket.emit('update', { type: keyval[0], val: keyval[1] });
 ```
-this code receive the notification on client side and add at a random position a bunny or a kitty:
+this code receive the notification on client side and add at a random position a bunny or a kitty (line 104: game.js):
 ```
 this.socket.on('update', function(data) {
 	console.log("update received");
@@ -81,7 +81,7 @@ this.socket.on('update', function(data) {
 This connection use the package unirest for Node.js, for more information follow the link to
 [Unirest](https://github.com/Mashape/unirest-nodejs).
 To use Bonita REST API you need to be connected so there is this fonction which allows to connect
-then do your call and finally disconnect:
+then do your call and finally disconnect (line 120: server.js):
 ```
 function connectThen(callback) {
 	unirest.post(remoteBonitaHost + "/loginservice?redirect=false&username=admin&password=bpm")
@@ -105,16 +105,17 @@ function connectThen(callback) {
 }
 ``` 
 
-Then, three nested request are called,
+Then, three nested request are called (line 85: server.js),
 
-* Get the process instance
-* Get value of the requested variable
-* Put the new value for the variable
+* Get the process instance (line 87: server.js),
+* Get value of the requested variable (line 96: server.js),
+* Put the new value for the variable (line 105: server.js)
+
 
 ```
 function modValue(vari, newValue) {
 	connectThen(function(logout) {
-			**unirest.get(remoteBonitaHost + "/API/bpm/case?p=0&c=10&s=bunny")**
+		>	unirest.get(remoteBonitaHost + "/API/bpm/case?p=0&c=10&s=bunny")
 				.headers({
 					'Accept': 'application/json'
 				})
@@ -123,7 +124,7 @@ function modValue(vari, newValue) {
 					console.log("Bonita Game case ID request");
 					console.log(response.body);
 					var processId = response.body[0].id;
-					**unirest.get(remoteBonitaHost + "/API/bpm/caseVariable/"+processId+"/"+vari)**
+		>			unirest.get(remoteBonitaHost + "/API/bpm/caseVariable/"+processId+"/"+vari)
 						.headers({
 							'Accept': 'application/json'
 						})
@@ -132,7 +133,7 @@ function modValue(vari, newValue) {
 							console.log("request for " + vari);
 							console.log(response.body);
 							var value = parseInt(response.body.value) + parseInt(newValue);
-							**unirest.put(remoteBonitaHost + "/API/bpm/caseVariable/"+processId+"/"+vari)**
+		>					unirest.put(remoteBonitaHost + "/API/bpm/caseVariable/"+processId+"/"+vari)
 								.headers({
 									'Accept': 'application/json'
 								})
@@ -182,9 +183,9 @@ it's made throught the following code:
 		
 		if (update) {
 			try {
-				**URL url = new URL(request);**
-				**InputStream is = url.openStream();**
-				**is.close();**
+		>		URL url = new URL(request);
+		>		InputStream is = url.openStream();
+		>		is.close();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
