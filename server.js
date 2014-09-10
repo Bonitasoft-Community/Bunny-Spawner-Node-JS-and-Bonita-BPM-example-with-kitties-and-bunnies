@@ -81,19 +81,26 @@ toClient.on('connection', function (socket) {
 			cat += data.value;
 		socket.broadcast.emit('update', {type: data.varName, val: data.value});
 	});
+	socket.on('resetServer', function(data) {
+		console.log("reset");
+		modValue('bunny', 0);
+		modValue('cat', 0);
+		socket.broadcast.emit('resetClient');
+	});
+	
 	setInterval(function() {
 		if(bunny > 0) {
-			modValue('bunny', bunny);
+			addValue('bunny', bunny);
 			bunny = 0;
 		}
 		if (cat > 0) {
-			modValue('cat', cat);
+			addValue('cat', cat);
 			cat = 0;
 		}
 	}, 1000);
 });
 
-function modValue(vari, newValue) {
+function addValue(vari, newValue) {
 	connectThen(function(logout) {
 			unirest.get(remoteBonitaHost + "/API/bpm/case?p=0&c=10&s=bunny")
 				.headers({
@@ -128,6 +135,34 @@ function modValue(vari, newValue) {
 				});
 		});
 }
+
+function modValue(vari, newValue) {
+	connectThen(function(logout) {
+		unirest.get(remoteBonitaHost + "/API/bpm/case?p=0&c=10&s=bunny")
+			.headers({
+				'Accept': 'application/json'
+			})
+			.jar(true)
+			.end(function(response) {
+				console.log("Bonita Game case ID request");
+				console.log(response.body);
+				var processId = response.body[0].id;
+				var value = parseInt(newValue);
+				unirest.put(remoteBonitaHost + "/API/bpm/caseVariable/"+processId+"/"+vari)
+					.headers({
+						'Accept': 'application/json'
+					})
+					.send("[{\"type\":\"java.lang.Integer\",\"value\":"+value+"}]")
+					.jar(true)
+					.end(function(response) {
+						console.log("request for change " + vari + " with value " + value);
+						console.log(response.body);
+						logout();
+					});
+			});
+	});
+}
+
 function connectThen(callback) {
 	unirest.post(remoteBonitaHost + "/loginservice?redirect=false&username=admin&password=bpm")
 		.headers({

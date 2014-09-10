@@ -119,8 +119,9 @@ Game.prototype.run = function() {
 				break;
 		}
 	});
-	this.socket.on('test', function(data) {
-		console.log("test received");
+	this.socket.on('resetClient', function(data) {
+		console.log("reset");
+		self.renderer.clean();
 	});
 	
 	this.canvasloader.setSize();

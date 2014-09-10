@@ -28,4 +28,9 @@ HandlerLoader.prototype.loadMouse = function() {
 	this.game.mainCanvas.oncontextmenu = function(event) {
 		return false;
 	}
+	
+	document.getElementById("reset").onmousedown = function(event) {
+		game.renderer.clean();
+		game.socket.emit('resetServer');
+	}
 }

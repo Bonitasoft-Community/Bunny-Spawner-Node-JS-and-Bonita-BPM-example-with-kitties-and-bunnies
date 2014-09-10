@@ -1,6 +1,7 @@
 function Renderer(game) {
 	this.map;
 	this.objectsToRender = new Array();
+	this.game = game;
 }
 
 Renderer.prototype.render = function(mainContext, objectContext) {	
@@ -53,4 +54,8 @@ Renderer.prototype.setLoadingScreen = function(loadingScreen) {
 
 Renderer.prototype.clean = function() {
 	this.objectsToRender = new Array();
+	this.game.nbBunny = 0;
+	this.game.nbCat = 0;
+	document.getElementById("bunnyNb").innerHTML = 0;
+	document.getElementById("catNb").innerHTML = 0;
 }
