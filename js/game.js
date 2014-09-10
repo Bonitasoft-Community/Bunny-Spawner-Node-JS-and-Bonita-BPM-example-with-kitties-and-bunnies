@@ -15,6 +15,7 @@ function Game(divId) {
 	this.map;
 	this.ressources = {};
 	this.renderer = new Renderer(this);
+	this.soundManager = new SoundManager(this);
 	this.canvasloader = new CanvasLoader(this);
 	this.handlerLoader = new HandlerLoader(this);
 	this.mainCanvas;
@@ -24,6 +25,9 @@ function Game(divId) {
 		grass:	"ressources/grass.png",
 		bunny:	"ressources/bunny.png",
 		cat:	"ressources/cat.png"
+	};
+	this.ressources.sonsSources = {
+		nya:	"ressources/nya.mp3"
 	};
 	
 	this.nbBunny = 0;
@@ -50,7 +54,7 @@ Game.prototype.init = function(callback) {
 			self.handlerLoader.load(function() {});
 		}
 	);
-	
+	this.soundManager.addSound("nya");
 	this.loadImage(
 		function() {
 			self.loadMap();
@@ -100,7 +104,7 @@ Game.prototype.loadImage = function(callback, counter) {
 
 Game.prototype.run = function() {
 	var self = this;
-	this.socket = io.connect('http://192.168.0.228:8042');
+	this.socket = io.connect(document.URL);
 	this.socket.on('update', function(data) {
 		console.log("update received");
 		console.log(data.type + ", " + data.val)

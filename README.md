@@ -34,27 +34,30 @@ And Bonita call the Node.js server via HTTP requests.
 
 ## Browser js client TO Node.js server
 
-the following code allow the client to send notification to the server (line 103: game.js & line 18/23: handlerLoader.js)):
+the following code allow the client to send notification to the server (line 107: game.js & line 19/24: handlerLoader.js)):
 ```
-socket = io.connect('http://localhost:8042');
+socket = io.connect(document.URL);
 socket.emit('update', {varName: 'bunny', value: 1});
 socket.emit('update', {varName: 'cat', value: 1});
 ```
 
-this code receive the notification on server side  (line 80: server.js):
+this code receive the notification on server side  (line 77: server.js):
 ```
-	socket.on('update', function(data) { 
-		modValue(data.varName, data.value);
-	});
+	socket.on('update', function(data) {
+		if (data.varName == "bunny")
+			bunny += data.value;
+		if (data.varName == "cat")
+			cat += data.value;
+	...
 ```
 
 ## Node.js server TO Browser js client
 
-the following code allow the server to send notification to the client  (line 44: server.js):
+the following code allow the server to send notification to clients  (line 40: server.js):
 ```
-clientSocket.emit('update', { type: keyval[0], val: keyval[1] });
+toClient.emit('update', { type: keyval[0], val: keyval[1] });
 ```
-this code receive the notification on client side and add at a random position a bunny or a kitty (line 104: game.js):
+this code receive the notification on client side and add at a random position a bunny or a kitty (line 108: game.js):
 ```
 this.socket.on('update', function(data) {
 	console.log("update received");
@@ -81,7 +84,7 @@ this.socket.on('update', function(data) {
 This connection use the package unirest for Node.js, for more information follow the link to
 [Unirest](https://github.com/Mashape/unirest-nodejs).
 To use Bonita REST API you need to be connected so there is this fonction which allows to connect
-then do your call and finally disconnect (line 120: server.js):
+then do your call and finally disconnect (line 166: server.js):
 ```
 function connectThen(callback) {
 	unirest.post(remoteBonitaHost + "/loginservice?redirect=false&username=admin&password=bpm")
@@ -105,11 +108,11 @@ function connectThen(callback) {
 }
 ``` 
 
-Then, three nested request are called throught the function modValue (line 85: server.js),
+Then, three nested request are called throught the function modValue (line 103: server.js),
 
-* Get the process instance (line 87: server.js),
-* Get value of the requested variable (line 96: server.js),
-* Put the new value for the variable (line 105: server.js)
+* Get the process instance
+* Get value of the requested variable
+* Put the new value for the variable
 
 
 ```
