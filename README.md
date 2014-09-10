@@ -9,12 +9,12 @@ This is an example of how to use the Bonita BPM web REST API with Node.js. To ma
  * npm Package socket.io
  * npm Package unirest
 * Bonita BPM Community 6.3.1 on localhost:8080
- * added user admin with password bpm
+ * added user "admin" with password "bpm"
  * intalled process bunny-1.0.bar
  
 # how to use
 
-* start the bunny process on the Bonita server
+* start the bunny process on the Bonita server, via the Portal
 * start the node server by typing: `node server.js`
 * start Internet explorer Nooo.. please don't. Start Firefox or Chrome instead.
  * Go on localhost:8042
@@ -28,7 +28,7 @@ it a three parts system,
 * Node js server
 * Bonita BPM
 
-The browser client and the Node.js server comminucate throught socket with Socket.io.
+The browser client and the Node.js server communicate throught socket with Socket.io.
 The Node.js server call the Bonita REST API with Unirest.
 And Bonita call the Node.js server via HTTP requests.
 
