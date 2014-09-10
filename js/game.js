@@ -100,7 +100,7 @@ Game.prototype.loadImage = function(callback, counter) {
 
 Game.prototype.run = function() {
 	var self = this;
-	this.socket = io.connect('http://localhost:8042');
+	this.socket = io.connect('http://192.168.0.228:8042');
 	this.socket.on('update', function(data) {
 		console.log("update received");
 		console.log(data.type + ", " + data.val)
@@ -118,6 +118,9 @@ Game.prototype.run = function() {
 			default:
 				break;
 		}
+	});
+	this.socket.on('test', function(data) {
+		console.log("test received");
 	});
 	
 	this.canvasloader.setSize();

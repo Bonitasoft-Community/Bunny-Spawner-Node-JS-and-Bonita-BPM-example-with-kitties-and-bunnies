@@ -7,6 +7,18 @@ canvas {
 	position: absolute;
 }
 
+#footer {
+	top: 500px;
+	text-align: center;
+	position: relative;
+}
+
+#game {
+	width: 1280px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
 #objectCanvas {
 	visibility: hidden;
 }

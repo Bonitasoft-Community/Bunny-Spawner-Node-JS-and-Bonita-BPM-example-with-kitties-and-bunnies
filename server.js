@@ -27,7 +27,6 @@ threadBonita.listen(3442);
 threadClient.listen(8042);
 
 
-var clientSocket;
 var log = console.log;
 
 function handlerBonita(req, res) {
@@ -38,12 +37,8 @@ function handlerBonita(req, res) {
 		var param = msg.split("&");
 		for (var i in param) {
 			var keyval = param[i].split("=");
-			if (clientSocket == null) {
-				console.log("client not connected");
-			} else {
-				clientSocket.emit('update', { type: keyval[0], val: keyval[1] });
-				console.log("socket emit " + keyval[0] + "=" + keyval[1]);
-			}
+			toClient.emit('update', { type: keyval[0], val: keyval[1] });
+			console.log("socket emit " + keyval[0] + "=" + keyval[1]);
 		}
 	}
 	console.log("message send to client");
@@ -74,17 +69,32 @@ function handlerClient(req, res) {
         });
 }
 
+var bunny = 0;
+var cat = 0;
+
 toClient.on('connection', function (socket) {
-	clientSocket = socket;
 	console.log("client connected ---------------------------------------------------------------------------------");
 	socket.on('update', function(data) {
-		modValue(data.varName, data.value);
+		if (data.varName == "bunny")
+			bunny += data.value;
+		if (data.varName == "cat")
+			cat += data.value;
+		socket.broadcast.emit('update', {type: data.varName, val: data.value});
 	});
+	setInterval(function() {
+		if(bunny > 0) {
+			modValue('bunny', bunny);
+			bunny = 0;
+		}
+		if (cat > 0) {
+			modValue('cat', cat);
+			cat = 0;
+		}
+	}, 1000);
 });
 
 function modValue(vari, newValue) {
 	connectThen(function(logout) {
-		//unirest.get(remoteBonitaHost + "/API/bpm/case?p=0&c=10&o=name%20ASC&s=BonitaGame&f=name%3dBonitaGame")
 			unirest.get(remoteBonitaHost + "/API/bpm/case?p=0&c=10&s=bunny")
 				.headers({
 					'Accept': 'application/json'
